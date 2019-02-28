@@ -7,6 +7,8 @@ WORKDIR /go/src/github.com/emitter-io/emitter/
 ADD . /go/src/github.com/emitter-io/emitter/
 
 # Download and install any required third party dependencies into the container.
+RUN apk add --no-cache git
+RUN go get github.com/tidwall/buntdb
 RUN apk add --no-cache g++ \
   && go install \
   && apk del g++
@@ -16,6 +18,7 @@ FROM alpine:latest
 RUN apk --no-cache add ca-certificates
 
 WORKDIR /root/
+ADD ./emitter.conf .
 # Get the executable binary from build-img declared previously
 COPY --from=builder /go/bin/emitter .
 
